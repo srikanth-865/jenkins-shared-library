@@ -1,9 +1,7 @@
 def call (){
 pipeline{
     agent {
-        node{
         label ROBOSHOP
-    }
     }
     stages{
         stage('Build'){
