@@ -2,18 +2,18 @@ def call (){
 pipeline{
     agent any
     stages{
-        stage{
-            steps('Build'){
+        stage('Build'){
+            steps{
                 echo 'Building stage'
             }
             }
-        stage{
-            steps('test'){
+        stage('Test'){
+            steps{
                 echo 'testing stage'
             }
         }
-        stage{
-            steps('deploy'){
+        stage('Deploy'){
+            steps{
                 echo 'deploying stage'
             }
             }
