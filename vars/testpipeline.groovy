@@ -1,10 +1,6 @@
 def call (){
 pipeline{
-    agent {
-         node {
-            label 'ROBOSHOP' //we gave in jenkins UI for to match label for this name to run this pipeline
-        }
-    }
+    agent any
     stages{
         stage{
             steps('Build'){
