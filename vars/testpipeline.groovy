@@ -1,11 +1,9 @@
 def call(Map configMap) {
     pipeline {
-        agent {
-            label 'ROBOSHOP'
-        }
+        agent any
         environment{
             project = configMap.get("project")
-            componentt = configMap.get("component")
+            component = configMap.get("component")
         }
         stages {
             stage('Build') {
