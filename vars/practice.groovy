@@ -1,9 +1,15 @@
-def call(){
+//The shared library contains the actual pipeline implementation. The main Jenkinsfile just calls it. by this file name ..practice()
+def call(configMap){
 pipeline{
     agent{
         node{
             label 'ROBOSHOP'
         }
+    }
+    environment{
+        name = configMap.get("name")
+        place = configMap.get("place")
+
     }
     stages{
         stage('Build stage'){
