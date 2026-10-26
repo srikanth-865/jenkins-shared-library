@@ -15,10 +15,8 @@ pipeline{
         stage('Build stage'){
           steps{
             script{
-                sh"""
-                   echo "i am building stage"
-                   echo "My name is : ${name}"
-                """
+                   "echo 'i am building stage'"
+                   "echo My name is : ${name}"
                }
           }
     }
