@@ -17,6 +17,7 @@ pipeline{
             script{
                 sh"""
                    echo "i am building stage"
+                   echo "My name is : ${name}"
                 """
                }
           }
@@ -26,6 +27,7 @@ pipeline{
             script{
                 sh"""
                    echo "i am scanninng stage"
+                   echo "My place is : ${place}"
                 """
                }
           }
