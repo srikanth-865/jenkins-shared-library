@@ -9,7 +9,7 @@ pipeline{
     environment{
         name = configMap.get("name")
         place = configMap.get("place")
-
+        course = 
     }
     stages{
         stage('Build stage'){
