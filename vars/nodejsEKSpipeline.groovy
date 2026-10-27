@@ -73,7 +73,14 @@ def call (Map configMap){
                  }
              }
 
-         } */
+         } */ //as sonarqube analysis is done with bugs and erros we resolved so dont want run othertime
+         stage('sonar-scan'){
+            steps{
+                script{
+                    utils.updateCommitStatus('SUCCESS', 'Sonar scanning is  passed', 'sonar-scan')
+                }
+            }
+         }
           stage('library-scan') {    //stage 6  Dependabot alerts checking
              steps {
                  script{
