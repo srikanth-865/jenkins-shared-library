@@ -52,7 +52,6 @@ def call (Map configMap){
                         }
                 } 
             }
-        }
 
         /*  stage('SonarQube Analysis') {  stage-4
              steps {
@@ -75,7 +74,7 @@ def call (Map configMap){
              }
 
          } */
-          stage('library-scan') {  //stage 6  Dependabot alerts checking
+          stage('library-scan')  //stage 6  Dependabot alerts checking
              steps {
                  script{
                     try{
@@ -201,5 +200,6 @@ def call (Map configMap){
         }
     }
     }
+}
 }
 }
