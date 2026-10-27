@@ -136,7 +136,7 @@ def call (Map configMap){
         } 
         }
        }
-       stage('Trivy Scan') {  stage 7
+       stage('Trivy Scan') {  //stage 7
             steps {
                 script {
                     try{
@@ -168,7 +168,7 @@ def call (Map configMap){
         }
        }
 
-        stage("ECR image push"){  stage 8
+        stage("ECR image push"){  //stage 8
         steps{
             script{ 
                 try{
