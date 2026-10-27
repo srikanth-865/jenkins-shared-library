@@ -6,7 +6,7 @@ def call (Map configMap){
          }
       }
         environment{
-            def appversion = ""  def  // variable globally to access wvwerystage
+            def appversion = ""   // variable globally to access wvwerystage
             acc_id = "349627593718"
             project =  configMap.get("project")
             component =  configMap.get("component")
@@ -123,7 +123,6 @@ def call (Map configMap){
                  // in this as we provide aws-creds in jenkins credential so we giving here so by that it will get secretkey&acceskey to build and push image into aws
                 withAWS(credentials: 'aws-creds', region: 'us-east-1') {
                 sh """
-
                      aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${acc_id}.dkr.ecr.us-east-1.amazonaws.com
                     docker build -t ${acc_id}.dkr.ecr.us-east-1.amazonaws.com/${project}/${component}:${appversion} .  
                 """
