@@ -70,14 +70,15 @@ def call (Map configMap){
       stage("promote-image"){
         steps{
             script{
-                  withAWS(credentials: 'aws-creds', region: 'us-east-1') {
-                sh """
-                    docker pull ${acc_id}.dkr.ecr.us-east-1.amazonaws.com/${project}/${component}:${appversion}   
-                    docker tag  ${acc_id}.dkr.ecr.us-east-1.amazonaws.com/${project}/${component}:${acc_id}.dkr.ecr.us-east-1.amazonaws.com/${project}/${env.GIT_COMMIT}
-                    docker push ${acc_id}.dkr.ecr.us-east-1.amazonaws.com/${project}/${env.GIT_COMMIT}
-                """
+                 withAWS(credentials: 'aws-creds', region: 'us-east-1') {
+                    sh """
+                        docker pull ${acc_id}.dkr.ecr.us-east-1.amazonaws.com/${project}/${component}:${appversion}
+
+                        docker tag ${acc_id}.dkr.ecr.us-east-1.amazonaws.com/${project}/${component}:${appversion} ${acc_id}.dkr.ecr.us-east-1.amazonaws.com/${project}/${component}:${env.GIT_COMMIT}
+
+                        docker push ${acc_id}.dkr.ecr.us-east-1.amazonaws.com/${project}/${component}:${env.GIT_COMMIT}
+                    """
               }
-              utils.updateCommitStatus('success', 'push image to ECR', 'push-image')
           }
         }
         }
