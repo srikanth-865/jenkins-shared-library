@@ -196,7 +196,6 @@ def call (Map configMap){
         }
     }
         }
-    }
   
        stage('Deploy') {
                 steps {
@@ -207,8 +206,8 @@ def call (Map configMap){
                                     aws eks update-kubeconfig --name roboshop --region us-east-1
                                     cd helm
                                     helm upgrade --install ${component} -f values-dev.yaml -n  roboshop-dev \
-                                    --set deployment.imageVersion=${appVersion} \
-                                    --wait --timeout 5m
+                                        --set deployment.imageVersion=${appVersion} \
+                                        --wait --timeout 5m
 
                                     kubectl rollout status deployment/${component} -n roboshop-dev --timeout=120s
                                 """
@@ -222,7 +221,7 @@ def call (Map configMap){
                     }
                 }
             }
-
+    }
   post{ 
         always { 
             echo 'I will always say Hello again!'
