@@ -79,12 +79,8 @@ def call (Map configMap){
               }
               utils.updateCommitStatus('success', 'push image to ECR', 'push-image')
           }
-          catch(Exception e){
-                            utils.updateCommitStatus('failure', 'push image to ECR', 'push-image')
-                            throw e
         }
         }
-            }
     }
   post{ 
         always { 
