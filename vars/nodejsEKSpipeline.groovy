@@ -207,7 +207,7 @@ def call (Map configMap){
                                     cd helm
                                     helm upgrade --install ${component} -f values-dev.yaml -n  roboshop-dev \
                                         --set deployment.imageVersion=${appversion} \
-                                        --wait --timeout 5m
+                                        --wait --timeout 5m .
 
                                     kubectl rollout status deployment/${component} -n roboshop-dev --timeout=120s
                                 """
