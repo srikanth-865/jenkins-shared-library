@@ -228,7 +228,7 @@ def call (Map configMap){
                             build job: 'ROBOSHOP/catalogue-api-tests', parameters: [
                                 string(name: 'NAMESPACE', value: 'roboshop-dev'),
                                 string(name: 'COMMIT_ID', value: env.GIT_COMMIT)
-                            ], wait: true, propagate: true
+                            ], wait: true, propagate: true //considering upstreamm errors are also downstream errors
                             utils.updateCommitStatus('success', 'catalogue-api-tests passed', 'api-tests')
                         }
                         catch (Exception e) {
