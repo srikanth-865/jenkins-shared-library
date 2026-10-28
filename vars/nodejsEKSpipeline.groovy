@@ -26,7 +26,7 @@ def call (Map configMap){
             }
 
         }
-        stage('installing dependencies'){  //stage 2 
+        stage('installing dependencies'){  //stage 2  build the packages
             steps{
                 script{
                     sh """
@@ -73,10 +73,11 @@ def call (Map configMap){
                  }
              }
 
-         } */ //as sonarqube analysis is done with bugs and erros we resolved so dont want run othertime
-         stage('sonar-scan'){
+         } */  
+         stage('sonar-scan'){ //as sonarqube analysis is done with bugs and erros we resolved so dont want run othertime thate=s why we use dummy
             steps{
                 script{
+                    //by the utility.update it will sends the corresponding status commit to GitHub
                     utils.updateCommitStatus('SUCCESS', 'Sonar scanning is  passed', 'sonar-scan')
                 }
             }
@@ -196,6 +197,32 @@ def call (Map configMap){
     }
         }
     }
+  
+       stage('Deploy') {
+                steps {
+                    script {
+                        try {
+                            withAWS(credentials: 'aws-creds', region: 'us-east-1') {
+                                sh """
+                                    aws eks update-kubeconfig --name roboshop --region us-east-1
+                                    cd helm
+                                    helm upgrade --install ${component} -f values-dev.yaml -n  roboshop-dev \
+                                    --set deployment.imageVersion=${appVersion} \
+                                    --wait --timeout 5m
+
+                                    kubectl rollout status deployment/${component} -n roboshop-dev --timeout=120s
+                                """
+                            }
+                            utils.updateCommitStatus('success', 'Deployed to roboshop-dev', 'dev-deploy')
+                        }
+                        catch (Exception e) {
+                            utils.updateCommitStatus('failure', 'Deploy to roboshop-dev failed', 'dev-deploy')
+                            throw e
+                        }
+                    }
+                }
+            }
+
   post{ 
         always { 
             echo 'I will always say Hello again!'
