@@ -85,8 +85,6 @@ def call (Map configMap){
         }
         }
             }
-        }
-      }
     }
   post{ 
         always { 
