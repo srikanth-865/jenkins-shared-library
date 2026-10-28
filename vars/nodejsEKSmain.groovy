@@ -25,7 +25,7 @@ def call (Map configMap){
                 }
             }
         }
-       stage('Deploy') {    //stage1
+       stage('Dev-Deploy') {    //stage1
                 steps {
                     script {
                         try {
@@ -66,6 +66,27 @@ def call (Map configMap){
                     }
                 }
         }
+
+      stage("promote-image"){
+        steps{
+            script{
+                  withAWS(credentials: 'aws-creds', region: 'us-east-1') {
+                sh """
+                    docker pull ${acc_id}.dkr.ecr.us-east-1.amazonaws.com/${project}/${component}:${appversion}   
+                    docker tag  ${acc_id}.dkr.ecr.us-east-1.amazonaws.com/${project}/${component}  ${acc_id}.dkr.ecr.us-east-1.amazonaws.com/${project}/${env.GIT_COMMIT}
+                    docker push ${acc_id}.dkr.ecr.us-east-1.amazonaws.com/${project}/${env.GIT_COMMIT}
+                """
+              }
+              utils.updateCommitStatus('success', 'push image to ECR', 'push-image')
+          }
+          catch(Exception e){
+                            utils.updateCommitStatus('failure', 'push image to ECR', 'push-image')
+                            throw e
+        }
+        }
+            }
+        }
+      }
     }
   post{ 
         always { 
