@@ -197,7 +197,7 @@ def call (Map configMap){
     }
         }
   
-       stage('Deploy') {
+       stage('Deploy') {    //stage9
                 steps {
                     script {
                         try {
@@ -221,6 +221,23 @@ def call (Map configMap){
                     }
                 }
             }
+        stage('api-tests') {   //stage 10
+                steps {
+                    script {
+                        try {
+                            build job: 'ROBOSHOP/catalogue-api-tests', parameters: [
+                                string(name: 'NAMESPACE', value: 'roboshop-dev'),
+                                string(name: 'COMMIT_ID', value: env.GIT_COMMIT)
+                            ], wait: true, propagate: true
+                            utils.updateCommitStatus('success', 'catalogue-api-tests passed', 'api-tests')
+                        }
+                        catch (Exception e) {
+                            utils.updateCommitStatus('failure', 'catalogue-api-tests failed', 'api-tests')
+                            throw e
+                        }
+                    }
+                }
+        }
     }
   post{ 
         always { 
