@@ -45,7 +45,7 @@ def call (Map configMap){
                     """
                      utils.updateCommitStatus('SUCCESS', 'Unit tests passed', 'unit-tests')
                     }
-                  catch (Exception e) {
+                   catch (Exception e) {
                             utils.updateCommitStatus('FAILURE', 'Unit tests failed', 'unit-tests')
                             throw e
                         }
@@ -202,15 +202,28 @@ def call (Map configMap){
                     script {
                         try {
                             withAWS(credentials: 'aws-creds', region: 'us-east-1') {
-                                sh """
-                                    aws eks update-kubeconfig --name roboshop --region us-east-1
-                                    cd helm
-                                    helm upgrade --install ${component} -f values-dev.yaml -n  roboshop-dev \
-                                        --set deployment.imageVersion=${appversion} \
-                                        --wait --timeout 5m .
+                                  sh """
+                                        aws eks update-kubeconfig --name roboshop --region us-east-1
+                                        cd helm
+                                        if kubectl get configmap ${component} -n roboshop-dev >/dev/null 2>&1; then
 
-                                    kubectl rollout status deployment/${component} -n roboshop-dev --timeout=120s
-                                """
+                                            kubectl label configmap ${component} -n roboshop-dev \
+                                                app.kubernetes.io/managed-by=Helm --overwrite
+
+                                            kubectl annotate configmap ${component} -n roboshop-dev \
+                                                meta.helm.sh/release-name=${component} \
+                                                meta.helm.sh/release-namespace=roboshop-dev --overwrite
+                                        fi
+
+                                        helm upgrade --install ${component} \
+                                            -f values-dev.yaml \
+                                            -n roboshop-dev \
+                                            --set deployment.imageVersion=${appversion} \
+                                            --wait --timeout 5m .
+
+                                        kubectl rollout status deployment/${component} \
+                                            -n roboshop-dev --timeout=120s
+                                    """
                             }
                             utils.updateCommitStatus('success', 'Deployed to roboshop-dev', 'dev-deploy')
                         }

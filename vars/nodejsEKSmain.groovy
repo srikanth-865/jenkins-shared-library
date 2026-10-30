@@ -82,6 +82,35 @@ def call (Map configMap){
           }
         }
         }
+        stage("sit-Deploy"){
+          steps {
+                    script {
+                        try {
+                            withAWS(credentials: 'aws-creds', region: 'us-east-1') {
+                                sh """
+                                    aws eks update-kubeconfig --name roboshop --region us-east-1
+
+                                    helm upgrade --install ${env_COMPONENT} ./helm \
+                                        -f ./helm/values-sit.yaml \
+                                        --namespace roboshop-sit \
+                                        --create-namespace \
+                                        --set deployment.imageVersion=${env_COMMIT_ID} \
+                                        --wait --timeout 5m
+
+                                    kubectl rollout status deployment/${env_COMPONENT} -n roboshop-sit --timeout=120s
+                                """
+                            }
+                            utils.updateCommitStatus('success', "Deployed ${env_COMMIT_ID} to roboshop-sit", 'sit-deploy')
+                        }
+                        catch (Exception e) {
+                            utils.updateCommitStatus('failure', 'Deploy to roboshop-sit failed', 'sit-deploy')
+                            throw e
+                        }
+                
+                    }
+                    }
+        }
+        
     }
   post{ 
         always { 
@@ -96,3 +125,9 @@ def call (Map configMap){
     }
     }
 }
+
+
+s=5
+k=5
+sum=s+k
+echo"sum is $sum"
